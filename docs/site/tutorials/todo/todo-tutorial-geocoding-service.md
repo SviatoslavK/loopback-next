@@ -63,6 +63,7 @@ docs here: [REST connector](/doc/en/lb3/REST-connector.html).
 
 ```json
 {
+  "name": "geocoder",
   "connector": "rest",
   "options": {
     "headers": {
@@ -92,20 +93,31 @@ docs here: [REST connector](/doc/en/lb3/REST-connector.html).
 
 ### Implement a service provider
 
-Create a new directory `src/services` and add the following two new files:
+Use the `lb4 service` command and the following inputs to create a calculator
+service:
 
-- `src/services/geocoder.service.ts` defining TypeScript interfaces for Geocoder
-  service and implementing a service proxy provider.
-- `src/services/index.ts` providing a conventient access to all services via a
-  single `import` statement.
+```sh
+lb4 service
+? Service type: Remote service proxy backed by a data source
+? Please select the datasource GeocoderDataSource
+? Service name: geocoder
+   create src/services/geocoder.service.ts
+   update src/services/index.ts
+
+Service Geocoder was created in src/services/
+```
+
+In the `src/services/geocoder.service.ts`, we'll add a `GeoPoint` interface and
+a `geocode` function to the `GeocoderService` interface as follows:
 
 {% include code-caption.html content="src/services/geocoder.service.ts" %}
 
 ```ts
-import {getService, juggler} from '@loopback/service-proxy';
+import {getService} from '@loopback/service-proxy';
 import {inject, Provider} from '@loopback/core';
 import {GeocoderDataSource} from '../datasources/geocoder.datasource';
 
+// Add the following interface
 export interface GeoPoint {
   /**
    * latitude
@@ -119,25 +131,20 @@ export interface GeoPoint {
 }
 
 export interface GeocoderService {
+  // Add the following property
   geocode(address: string): Promise<GeoPoint[]>;
 }
 
 export class GeocoderServiceProvider implements Provider<GeocoderService> {
   constructor(
     @inject('datasources.geocoder')
-    protected dataSource: juggler.DataSource = new GeocoderDataSource(),
+    protected dataSource: GeocoderDataSource = new GeocoderDataSource(),
   ) {}
 
   value(): Promise<GeocoderService> {
     return getService(this.dataSource);
   }
 }
-```
-
-{% include code-caption.html content="src/services/index.ts" %}
-
-```ts
-export * from './geocoder.service';
 ```
 
 ### Enhance Todo model with location data
@@ -179,7 +186,8 @@ import {GeocoderService} from '../services';
 
 export class TodoController {
   constructor(
-    @repository(TodoRepository) protected todoRepo: TodoRepository,
+    @repository(TodoRepository)
+    public todoRepository: TodoRepository,
     @inject('services.GeocoderService') protected geoService: GeocoderService,
   ) {}
 
@@ -187,7 +195,7 @@ export class TodoController {
 }
 ```
 
-Modify `create` method to look up the address provided in `remindAtAddress`
+Modify the `create` method to look up the address provided in `remindAtAddress`
 property and convert it to GPS coordinates stored in `remindAtGeo`.
 
 {% include code-caption.html content="src/controllers/todo.controller.ts" %}

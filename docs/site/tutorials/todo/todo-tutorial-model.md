@@ -48,7 +48,7 @@ these steps:
 ```sh
 lb4 model
 ? Model class name: todo
-? Please select the model base class: Entity
+? Please select the model base class Entity (A persisted model with an ID)
 ? Allow additional (free-form) properties? No
 Model Todo will be created in src/models/todo.model.ts
 
@@ -58,8 +58,8 @@ Enter an empty property name when done
 ? Enter the property name: id
 ? Property type: number
 ? Is id the ID property? Yes
-? Is it required?: No
 ? Is id generated automatically? No
+? Is it required?: No
 ? Default value [leave blank for none]:
 
 Let's add another property to Todo

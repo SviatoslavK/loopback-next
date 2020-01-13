@@ -29,12 +29,32 @@ datasources.
 lb4 repository
 ? Please select the datasource DbDatasource
 ? Select the model(s) you want to generate a repository TodoList
-   create src/repositories/todo-list.repository.ts
-   update src/repositories/index.ts
 ? Please select the repository base class DefaultCrudRepository (Legacy juggler
 bridge)
+   create src/repositories/todo-list.repository.ts
+   update src/repositories/index.ts
 
 Repository TodoListRepository was created in src/repositories/
+```
+
+#### Custom Methods
+
+A custom method can be added to the repository class. For example, if we want to
+get a `title` from the repository level, the following method can be added:
+
+```ts
+export class TodoListRepository extends DefaultCrudRepository<
+  TodoList,
+  typeof TodoList.prototype.id,
+  TodoListRelations
+> {
+  // other code
+
+  // Add the following function
+  public findByTitle(title: string) {
+    return this.findOne({where: {title}});
+  }
+}
 ```
 
 ### Navigation
