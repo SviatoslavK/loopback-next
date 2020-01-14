@@ -21,7 +21,7 @@ the application. Typically, in LoopBack 4, datasources are used in conjunction
 with [Repositories](../../Repositories.md) to provide access to data.
 
 For more information about datasources in LoopBack, see
-[DataSources](https://loopback.io/doc/en/lb4/DataSources.html).
+[DataSources](../../DataSources.md).
 
 Since our Todo API will need to persist instances of Todo items, we'll need to
 create a datasource definition to make this possible.
@@ -45,6 +45,9 @@ lb4 datasource
 
 Datasource Db was created in src/datasources/
 ```
+
+To view the completed files, see the
+[`Todo` example](https://github.com/strongloop/loopback-next/tree/master/examples/todo/src/datasources).
 
 Create a `data` folder in the applications root and add a new file called
 `db.json` containing an example database.

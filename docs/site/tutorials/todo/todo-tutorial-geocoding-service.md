@@ -11,9 +11,10 @@ summary:
 ### Services
 
 To call other APIs and web services from LoopBack applications, we recommend to
-use Service Proxies as a design pattern for encapsulating low-level
-implementation details of communication with 3rd-party services and providing
-JavaScript/TypeScript API that's easy to consume e.g. from Controllers. See
+use [Service Proxies](../../Services.md) as a design pattern for encapsulating
+low-level implementation details of communication with 3rd-party services and
+providing JavaScript/TypeScript API that's easy to consume e.g. from
+Controllers. See
 [Calling other APIs and web services](../../Calling-other-APIs-and-Web-Services.md)
 for more details.
 
@@ -93,13 +94,13 @@ docs here: [REST connector](/doc/en/lb3/REST-connector.html).
 
 ### Implement a service provider
 
-Use the `lb4 service` command and the following inputs to create a calculator
+Use the `lb4 service` command and the following inputs to create a geocoder
 service:
 
 ```sh
 lb4 service
 ? Service type: Remote service proxy backed by a data source
-? Please select the datasource GeocoderDataSource
+? Please select the datasource GeocoderDatasource
 ? Service name: geocoder
    create src/services/geocoder.service.ts
    update src/services/index.ts

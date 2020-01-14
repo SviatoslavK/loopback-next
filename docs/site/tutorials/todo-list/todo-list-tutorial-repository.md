@@ -40,7 +40,8 @@ Repository TodoListRepository was created in src/repositories/
 #### Custom Methods
 
 A custom method can be added to the repository class. For example, if we want to
-get a `title` from the repository level, the following method can be added:
+find a `TodoList` with a specific `title` from the repository level, the
+following method can be added:
 
 ```ts
 export class TodoListRepository extends DefaultCrudRepository<
@@ -56,6 +57,9 @@ export class TodoListRepository extends DefaultCrudRepository<
   }
 }
 ```
+
+To view the completed file, see the
+[`TodoList` example](https://github.com/strongloop/loopback-next/blob/master/examples/todo-list/src/repositories/todo-list.repository.ts).
 
 ### Navigation
 

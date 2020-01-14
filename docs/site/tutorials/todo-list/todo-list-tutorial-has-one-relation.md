@@ -69,7 +69,12 @@ Repository TodoListImageRepository was created in src/repositories/
 
 ### Add the Relation
 
-First, let's add the relation to the model classes:
+{% include note.html content="
+We are working on adding `hasOne` to the CLI command `lb4 relation`. See [issue #2980](https://github.com/strongloop/loopback-next/issues/2980).
+" %}
+
+Adding a [`hasOne` relation](../../hasOne-relation.md) is simple. First, let's
+add the relation to the model classes:
 
 {% include code-caption.html content="src/models/todo-list-image.model.ts" %}
 
@@ -197,7 +202,9 @@ export class TodoListImageRepository extends DefaultCrudRepository<
 ```
 
 {% include note.html content="
-We are working on adding `hasOne` to the CLI command `lb4 relation`. See [issue #2980](https://github.com/strongloop/loopback-next/issues/2980).
+We use **default** foreign key and source property names in this case.
+If you'd like to customize them, please check [`Relation Metadata`](
+../../hasOne-relation.md#relation-metadata).
 " %}
 
 ### Create the Controller

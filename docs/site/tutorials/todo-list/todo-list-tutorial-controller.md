@@ -12,8 +12,9 @@ summary:
 ### Controllers with related models
 
 Defining business logic to handle requests to related models isn't too different
-from handling requests for standalone models. We'll create controllers to handle
-requests for todo-lists and todo items under a todo-list.
+from handling requests for standalone models. We'll create
+[controllers](../../Controllers.md) to handle requests for todo-lists and todo
+items under a todo-list.
 
 ### Create TodoList controller
 
@@ -37,6 +38,9 @@ Controller TodoList will be created in src/controllers/todo-list.controller.ts
 
 Controller TodoList was created in src/controllers/
 ```
+
+To view the completed file, see the
+[`TodoList` example](https://github.com/strongloop/loopback-next/blob/master/examples/todo-list/src/controllers/todo-list.controller.ts).
 
 And voilà! We now have a set of basic APIs for todo-lists, just like that!
 
@@ -128,11 +132,19 @@ async findTodoById(/*...*/) {/*...*/}
 Earlier when we used `lb4 relation` to create the two relations between `Todo`
 and `TodoList`, you may have noticed
 `src/controllers/todo-todo-list.controller.ts` and
-`src/controllers/todo-list-todo.conrtoller.ts` were created. These files contain
+`src/controllers/todo-list-todo.controller.ts` were created. These files contain
 a set of API for the relations.
+
+Relation controllers act in a similar manner to normal controllers, except they
+modify the relational property. For example, in the
+`src/controllers/todo-list-todo.controller.ts` file, we can do requests to the
+endpoint `/todo-lists/{id}/todos`, which we'll see in the
+[Try it out](###Try-it-out) section.
 
 As `src/controllers/todo-todo-list.controller.ts` only contains one method, we
 can move it to the `Todo` controller and delete that file:
+
+{% include code-caption.html content="src/models/todo.controller.ts" %}
 
 ```ts
 export class TodoController {

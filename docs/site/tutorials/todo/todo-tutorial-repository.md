@@ -20,7 +20,7 @@ strong-typed data access (for example, CRUD) operations of a domain model
 against the underlying database or service.
 
 For more information about Repositories, see
-[Repositories](https://loopback.io/doc/en/lb4/Repositories.html).
+[Repositories](../../Repositories.md).
 
 ### Create your repository
 
@@ -50,6 +50,9 @@ are needed to perform CRUD operations for our to-do model. It leverages the Todo
 model definition and 'db' datasource configuration and retrieves the datasource
 using
 [Dependency Injection](https://loopback.io/doc/en/lb4/Dependency-injection.html).
+
+To view the completed file, see the
+[`Todo` example](https://github.com/strongloop/loopback-next/blob/master/examples/todo/src/repositories/todo.repository.ts).
 
 Now we can expose the `Todo` API through the
 [controller](todo-tutorial-controller.md).
