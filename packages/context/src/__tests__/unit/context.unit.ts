@@ -9,10 +9,12 @@ import {
   BindingCreationPolicy,
   BindingKey,
   BindingScope,
+  BindingTag,
   BindingType,
   Context,
   ContextEventListener,
   ContextEventObserver,
+  filterByTag,
   isPromiseLike,
   Provider,
 } from '../..';
@@ -33,6 +35,16 @@ class TestContext extends Context {
   get bindingMap() {
     const map = new Map(this.registry);
     return map;
+  }
+  get tagIndex() {
+    return this.bindingsIndexedByTag;
+  }
+
+  findByTagInvoked = false;
+
+  _findByTagIndex(tag: BindingTag | RegExp) {
+    this.findByTagInvoked = true;
+    return super._findByTagIndex(tag);
   }
 }
 
@@ -96,6 +108,18 @@ describe('Context', () => {
         'Cannot rebind key "foo" to a locked binding',
       );
     });
+
+    it('indexes a binding by tag', () => {
+      const binding = ctx.bind('foo').tag('a', {b: 1});
+      assertBindingIndexedByTag(binding, 'a', 'b');
+    });
+
+    it('indexes a binding by tag after being bound', () => {
+      const binding = ctx.bind('foo');
+      assertBindingNotIndexedByTag(binding, 'a', 'b');
+      binding.tag('a', {b: 1});
+      assertBindingIndexedByTag(binding, 'a', 'b');
+    });
   });
 
   describe('add', () => {
@@ -112,6 +136,20 @@ describe('Context', () => {
       expect(() => ctx.add(new Binding('foo'))).to.throw(
         'Cannot rebind key "foo" to a locked binding',
       );
+    });
+
+    it('indexes a binding by tag', () => {
+      const binding = new Binding('foo').to('bar').tag('a', {b: 1});
+      ctx.add(binding);
+      assertBindingIndexedByTag(binding, 'a', 'b');
+    });
+
+    it('indexes a binding by tag after being bound', () => {
+      const binding = new Binding('foo').to('bar');
+      ctx.add(binding);
+      assertBindingNotIndexedByTag(binding, 'a', 'b');
+      binding.tag('a', {b: 1});
+      assertBindingIndexedByTag(binding, 'a', 'b');
     });
   });
 
@@ -192,6 +230,16 @@ describe('Context', () => {
       const result = childCtx.unbind('foo');
       expect(result).to.be.false();
       expect(ctx.contains('foo')).to.be.true();
+    });
+
+    it('removes indexes for a binding by tag', () => {
+      const binding = ctx
+        .bind('foo')
+        .to('bar')
+        .tag('a', {b: 1});
+      assertBindingIndexedByTag(binding, 'a', 'b');
+      ctx.unbind(binding.key);
+      assertBindingNotIndexedByTag(binding, 'a', 'b');
     });
   });
 
@@ -278,6 +326,42 @@ describe('Context', () => {
       result = ctx.find(binding => binding.tagNames.includes('b'));
       expect(result).to.be.eql([b2, b3]);
     });
+
+    it('leverages binding index by tag', () => {
+      ctx.bind('foo');
+      const b2 = ctx.bind('bar').tag('b');
+      const b3 = ctx.bind('baz').tag('b');
+      const result = ctx.find(filterByTag('b'));
+      expect(result).to.eql([b2, b3]);
+      expect(ctx.findByTagInvoked).to.be.true();
+    });
+
+    it('leverages binding index by tag wildcard', () => {
+      ctx.bind('foo');
+      const b2 = ctx.bind('bar').tag('b2');
+      const b3 = ctx.bind('baz').tag('b3');
+      const result = ctx.find(filterByTag('b?'));
+      expect(result).to.eql([b2, b3]);
+      expect(ctx.findByTagInvoked).to.be.true();
+    });
+
+    it('leverages binding index by tag regexp', () => {
+      ctx.bind('foo');
+      const b2 = ctx.bind('bar').tag('b2');
+      const b3 = ctx.bind('baz').tag('b3');
+      const result = ctx.find(filterByTag(/b\d/));
+      expect(result).to.eql([b2, b3]);
+      expect(ctx.findByTagInvoked).to.be.true();
+    });
+
+    it('leverages binding index by tag name/value pairs', () => {
+      ctx.bind('foo');
+      const b2 = ctx.bind('bar').tag({a: 1});
+      ctx.bind('baz').tag({a: 2, b: 1});
+      const result = ctx.find(filterByTag({a: 1}));
+      expect(result).to.eql([b2]);
+      expect(ctx.findByTagInvoked).to.be.true();
+    });
   });
 
   describe('findByTag with name pattern', () => {
@@ -316,6 +400,34 @@ describe('Context', () => {
       ctx.bind('dataSources.mysql').tag({dbType: 'mysql'});
       const result = ctx.findByTag({name: 'my-controller'});
       expect(result).to.be.eql([b1]);
+    });
+
+    it('returns matching binding for multiple tags', () => {
+      const b1 = ctx
+        .bind('controllers.ProductController')
+        .tag({name: 'my-controller'})
+        .tag('controller');
+      ctx.bind('controllers.OrderController').tag('controller');
+      ctx.bind('dataSources.mysql').tag({dbType: 'mysql'});
+      const result = ctx.findByTag({
+        name: 'my-controller',
+        controller: 'controller',
+      });
+      expect(result).to.be.eql([b1]);
+    });
+
+    it('returns empty array if one of the tags does not match', () => {
+      ctx
+        .bind('controllers.ProductController')
+        .tag({name: 'my-controller'})
+        .tag('controller');
+      ctx.bind('controllers.OrderController').tag('controller');
+      ctx.bind('dataSources.mysql').tag({dbType: 'mysql'});
+      const result = ctx.findByTag({
+        controller: 'controller',
+        name: 'your-controller',
+      });
+      expect(result).to.be.eql([]);
     });
 
     it('returns empty array if no matching tag value is found', () => {
@@ -889,5 +1001,23 @@ describe('Context', () => {
 
   function createContext() {
     ctx = new TestContext('app');
+  }
+
+  function assertBindingIndexedByTag(
+    binding: Binding<unknown>,
+    ...tags: string[]
+  ) {
+    for (const t of tags) {
+      expect(ctx.tagIndex.get(t)?.has(binding)).to.be.true();
+    }
+  }
+
+  function assertBindingNotIndexedByTag(
+    binding: Binding<unknown>,
+    ...tags: string[]
+  ) {
+    for (const t of tags) {
+      expect(!!ctx.tagIndex.get(t)?.has(binding)).to.be.false();
+    }
   }
 });
