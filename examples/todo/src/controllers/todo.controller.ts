@@ -18,12 +18,12 @@ import {
 } from '@loopback/rest';
 import {Todo} from '../models';
 import {TodoRepository} from '../repositories';
-import {GeocoderService} from '../services';
+import {Geocoder} from '../services';
 
 export class TodoController {
   constructor(
     @repository(TodoRepository) protected todoRepo: TodoRepository,
-    @inject('services.GeocoderService') protected geoService: GeocoderService,
+    @inject('services.Geocoder') protected geoService: Geocoder,
   ) {}
 
   @post('/todos', {
