@@ -10,7 +10,9 @@ summary: LoopBack 4 TodoList Application Tutorial - Add TodoListImage Relation
 We have that a `Todo` [`belongsTo`](../../BelongsTo-relation.md) a `TodoList`
 and a `TodoList` [`hasMany`](../../HasMany-relation.md) `Todo`s. Another type of
 relation we can add is [`hasOne`](../../hasOne-relation.md). To do so, let's add
-`TodoListImage` such that each `TodoList` `hasOne` image.
+`TodoListImage` such that each `TodoList` `hasOne` image. In parallel, a
+`TodoListImage` will belong to a `TodoList`, similar to how a `Todo` belongs to
+`TodoList`.
 
 ### Create the Model
 
@@ -74,7 +76,10 @@ We are working on adding `hasOne` to the CLI command `lb4 relation`. See [issue 
 " %}
 
 Adding a [`hasOne` relation](../../hasOne-relation.md) is simple. First, let's
-add the relation to the model classes:
+add the relation to the model classes.
+
+In the `TodoListImage` model class, we'll start by adding a `todoListId`
+property to reference the `TodoList` this image belongs to:
 
 {% include code-caption.html content="src/models/todo-list-image.model.ts" %}
 
@@ -96,6 +101,9 @@ export interface TodoListImageRelations {
   todoList?: TodoListWithRelations;
 }
 ```
+
+In the `TodoList` model class, we'll add an `image` property to represent the
+`TodoListImage` this `TodoList` has one of:
 
 {% include code-caption.html content="src/models/todo-list.model.ts" %}
 
@@ -123,6 +131,10 @@ export interface TodoListRelations {
   image?: TodoListImageWithRelations;
 }
 ```
+
+{% include note.html content="
+See the [`@hasOne`](../../hasOne-relation.md#relation-metadata) and [`@belongsTo`](../../BelongsTo-relation.md#relation-metadata) documentation for more information on how to customize the decorators.
+" %}
 
 Next, let's add the relation to the repository classes:
 

@@ -114,9 +114,9 @@ a `geocode` function to the `GeocoderService` interface as follows:
 {% include code-caption.html content="src/services/geocoder.service.ts" %}
 
 ```ts
-import {getService} from '@loopback/service-proxy';
 import {inject, Provider} from '@loopback/core';
-import {GeocoderDataSource} from '../datasources/geocoder.datasource';
+import {getService} from '@loopback/service-proxy';
+import {GeocoderDataSource} from '../datasources';
 
 // Add the following interface
 export interface GeoPoint {
@@ -131,18 +131,19 @@ export interface GeoPoint {
   x: number;
 }
 
-export interface GeocoderService {
+export interface Geocoder {
   // Add the following property
   geocode(address: string): Promise<GeoPoint[]>;
 }
 
-export class GeocoderServiceProvider implements Provider<GeocoderService> {
+export class GeocoderProvider implements Provider<Geocoder> {
   constructor(
+    // geocoder must match the name property in the datasource json file
     @inject('datasources.geocoder')
     protected dataSource: GeocoderDataSource = new GeocoderDataSource(),
   ) {}
 
-  value(): Promise<GeocoderService> {
+  value(): Promise<Geocoder> {
     return getService(this.dataSource);
   }
 }

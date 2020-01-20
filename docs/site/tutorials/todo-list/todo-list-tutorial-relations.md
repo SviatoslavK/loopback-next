@@ -118,7 +118,7 @@ export class TodoList extends Entity {
   // ...properties defined by the CLI...
 
   @hasMany(() => Todo)
-  todos?: Todo[];
+  todos: Todo[];
 
   // ...constructor def...
 }

@@ -42,6 +42,8 @@ Enter an empty property name when done
 ? Property type: number
 ? Is id the ID property? Yes
 ? Is id generated automatically? No
+? Is it required?: No
+? Default value [leave blank for none]:
 
 Let's add another property to TodoList
 Enter an empty property name when done

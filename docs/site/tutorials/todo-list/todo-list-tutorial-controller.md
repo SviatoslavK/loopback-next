@@ -139,7 +139,7 @@ Relation controllers act in a similar manner to normal controllers, except they
 modify the relational property. For example, in the
 `src/controllers/todo-list-todo.controller.ts` file, we can do requests to the
 endpoint `/todo-lists/{id}/todos`, which we'll see in the
-[Try it out](###Try-it-out) section.
+[Try it out](#try-it-out) section.
 
 As `src/controllers/todo-todo-list.controller.ts` only contains one method, we
 can move it to the `Todo` controller and delete that file:
@@ -188,13 +188,19 @@ Here are some new requests you can try out:
 
 - `POST /todo-lists` with a body of `{ "title": "grocery list" }`.
 - `POST /todo-lists/{id}/todos` using the ID you got back from the previous
-  `POST` request and a body for a todo. Notice that response body you get back
-  contains property `todoListId` with the ID from before.
-- `GET /todo-lists/{id}/todos` and see if you get the todo you created from
-  before.
+  `POST` request and this body: `{ "title": "get eggs", "isComplete": false}`.
+  Notice that response body you get back contains property `todoListId` with the
+  ID from before.
+- `GET /todo-lists/{id}/todos` with the ID from before, and see if you get the
+  todo you created from before.
 - `GET /todo-lists/{id}` with the ID from before, with the following filter
-  `{include: [{relation: 'todo'}]}`, and see if you get a `todos` property with
-  the todo created before.
+  `{include: [{relation: 'todos'}]}`, and see if you get a `todos` property with
+  the todo created before. **Note**: this filter won't work through the API
+  explorer (See this
+  [GitHub issue](https://github.com/strongloop/loopback-next/issues/2208) for
+  details). Use the following url to test this endpoint (remember to replace
+  `{id}` with the ID from before):
+  http://localhost:3000/todo-lists/{id}?filter[include][][relation]=todos
 
 And there you have it! You now have the power to define APIs for related models!
 

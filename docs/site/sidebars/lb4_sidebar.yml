@@ -338,22 +338,23 @@ children:
       url: todo-tutorial-geocoding-service.html
       output: 'web, pdf'
 
-    - title: 'TodoList Tutorial'
-      url: todo-list-tutorial.html
+  - title: 'TodoList Tutorial'
+    url: todo-list-tutorial.html
+    output: 'web, pdf'
+    children:
+
+    - title: 'Add TodoList Model'
+      url: todo-list-tutorial-model.html
+      output: 'web, pdf'
+
+    - title: 'Add TodoList Repository'
+      url: todo-list-tutorial-repository.html
+      output: 'web, pdf'
+
+    - title: 'Add Model Relations'
+      url: todo-list-tutorial-relations.html
       output: 'web, pdf'
       children:
-
-      - title: 'Add TodoList Model'
-        url: todo-list-tutorial-model.html
-        output: 'web, pdf'
-
-      - title: 'Add TodoList Repository'
-        url: todo-list-tutorial-repository.html
-        output: 'web, pdf'
-
-      - title: 'Add Model Relations'
-        url: todo-list-tutorial-relations.html
-        output: 'web, pdf'
 
       - title: 'Add a HasOne Relation'
         url: todo-list-tutorial-has-one-relation.html
