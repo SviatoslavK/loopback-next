@@ -19,7 +19,7 @@ $ lb4 relation
 ? Please select source model TodoList
 ? Please select target model Todo
 ? Foreign key name to define on the target model todoListId
-? Source property name for the relation getter todos
+? Source property name for the relation getter (will be the relation name) todos
 ? Allow TodoList queries to include data from related Todo instances? Yes
    create src/controllers/todo-list-todo.controller.ts
 
@@ -34,7 +34,8 @@ $ lb4 relation
 ? Please select the relation type belongsTo
 ? Please select source model Todo
 ? Please select target model TodoList
-? Source property name for the relation getter todoListId
+? Foreign key name to define on the source model todoListId
+? Relation name todoList
 ? Allow Todo queries to include data from related TodoList instances? Yes
    create src/controllers/todo-todo-list.controller.ts
 
