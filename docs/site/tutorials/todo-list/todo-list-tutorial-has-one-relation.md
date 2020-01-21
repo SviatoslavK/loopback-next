@@ -102,6 +102,10 @@ export interface TodoListImageRelations {
 }
 ```
 
+{% include note.html content="
+A `hasOne` relation from model A to model B does not need a `belongsTo` relation to exist from model B to model A.
+" %}
+
 In the `TodoList` model class, we'll add an `image` property to represent the
 `TodoListImage` this `TodoList` has one of:
 
@@ -119,7 +123,7 @@ export class TodoList extends Entity {
   // ... other properties
 
   @hasOne(() => TodoListImage)
-  image?: TodoListImage;
+  image: TodoListImage;
 
   // ...
 }
@@ -272,3 +276,9 @@ export class TodoListImageController {
   }
 }
 ```
+
+### Navigation
+
+Previous step: [Add TodoList Relations](todo-list-tutorial-relations.md)
+
+Last step: [Add TodoList Controller](todo-list-tutorial-controller.md)

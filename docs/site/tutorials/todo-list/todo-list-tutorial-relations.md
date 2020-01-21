@@ -11,7 +11,7 @@ summary: LoopBack 4 TodoList Application Tutorial - Add TodoList Repository
 
 We are going to add the model relation to indicate the relation that `TodoList`
 _hasMany_ `Todo` using the
-[`lb4 relation` command](https://loopback.io/doc/en/lb4/Relation-generator.html).
+[`lb4 relation` command](../../Relation-generator.md).
 
 ```sh
 $ lb4 relation
@@ -43,9 +43,9 @@ Relation BelongsTo was created in src/
 ```
 
 {% include note.html content="
-we use **default** foreign key and source property names in this case.
-If you'd like to customize them, please check `Relation Metadata`
-https://loopback.io/doc/en/lb4/HasMany-relation.html#relation-metadata and other
+We use **default** foreign key and source property names in this case.
+If you'd like to customize them, please check [Relation Metadata](
+../../HasMany-relation.md#relation-metadata) and other
 relations as well.
 " %}
 
@@ -246,6 +246,12 @@ this.todoList = this.createBelongsToAccessorFor(
 // this line enables inclusion for this relation
 this.registerInclusionResolver('todoList', this.todoList.inclusionResolver);
 ```
+
+There's an additional relation type LoopBack 4 supports, which is
+[`hasOne`](../../hasOne-relation.md). If you're interested in trying it out, see
+[Add TodoListImage Relation](todo-list-tutorial-has-one-relation.md). This is
+not required for the application, so if you'd like to skip it, see the
+[navigation](#navigation) for the last step.
 
 ### Navigation
 
