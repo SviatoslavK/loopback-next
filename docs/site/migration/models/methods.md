@@ -6,8 +6,15 @@ sidebar: lb4_sidebar
 permalink: /doc/en/lb4/migration-models-methods.html
 ---
 
-{% include note.html content="
-This is a placeholder page, the task of adding content is tracked by the
-following GitHub issue:
-[loopback-next#3949](https://github.com/strongloop/loopback-next/issues/3949).
-" %}
+## Introduction
+
+In LoopBack 3, a model class has three responsibilities: a model describing shape of data, a repository providing data-access APIs, and a controller implementing REST API.
+
+
+In LoopBack 4:
+
+- data-access APIs are implemented by repositories that are decoupled from models
+- the REST APIs are implemented by controllers that are decoupled
+from models.
+
+
