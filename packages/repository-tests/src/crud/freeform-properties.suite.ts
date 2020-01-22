@@ -5,8 +5,7 @@
 
 import {Entity, model, property} from '@loopback/repository';
 import {EntityCrudRepository} from '@loopback/repository';
-import {expect, skipIf, toJSON} from '@loopback/testlab';
-import {Suite} from 'mocha';
+import {expect, skipIf, toJSON, sinon} from '@loopback/testlab';
 import {MixedIdType} from '../helpers.repository-tests';
 import {
   withCrudCtx,
@@ -18,38 +17,56 @@ import {
   CrudTestContext,
   DataSourceOptions,
 } from '../types.repository-tests';
+import {assert} from 'console';
 
 export function freeformPropertiesSuite(
   dataSourceOptions: DataSourceOptions,
   repositoryClass: CrudRepositoryCtor,
   features: CrudFeatures,
 ) {
-  skipIf<[(this: Suite) => void], void>(
+  @model({settings: {strict: false}})
+  class Freeform extends Entity {
+    @property({
+      type: features.idType,
+      id: true,
+      description: 'The unique identifier for a product',
+    })
+    id: MixedIdType;
+
+    @property({type: 'string', required: true})
+    name: string;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    [propName: string]: any;
+
+    constructor(data?: Partial<Freeform>) {
+      super(data);
+    }
+  }
+
+  it('SQL DBs should warn that {strict: false} mode is not supported', async () => {
+    before(function() {
+      sinon.spy(console, 'warn');
+    });
+    withCrudCtx(async (ctx: CrudTestContext) => {
+      new repositoryClass(Freeform, ctx.dataSource);
+    });
+    if (!features.freeFormProperties) {
+      expect(console.warn).to.be.called;
+      assert(
+        "WARNING: relational database doesn't support {strict: false} mode. {strict: true} " +
+          'mode will be set for model Freeform instead.',
+      );
+    }
+  });
+
+  // test DBs that support freeform props
+  skipIf(
     !features.freeFormProperties,
-    describe,
-    'free-form properties (strict: false)',
-    () => {
+    it,
+    'free-form properties {strict: false}',
+    async () => {
       before(deleteAllModelsInDefaultDataSource);
-
-      @model({settings: {strict: false}})
-      class Freeform extends Entity {
-        @property({
-          type: features.idType,
-          id: true,
-          description: 'The unique identifier for a product',
-        })
-        id: MixedIdType;
-
-        @property({type: 'string', required: true})
-        name: string;
-
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        [propName: string]: any;
-
-        constructor(data?: Partial<Freeform>) {
-          super(data);
-        }
-      }
 
       let repo: EntityCrudRepository<Freeform, typeof Freeform.prototype.id>;
 
